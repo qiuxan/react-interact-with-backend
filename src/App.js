@@ -1,17 +1,8 @@
 import React, { Component } from "react";
-import axios from "axios";
 import "./App.css";
+import http from "./services/httpService";
 
-axios.interceptors.response.use(null, error => {
-  // console.log('interceptor called');
-  const expectedError = error.response && error.response.status >= 400 && error.response.status < 500;
-  if (!expectedError) {
-    alert('An unexpected error occurred.');
-    console.log("looging the error", error);
-  }
-  return Promise.reject(error);
 
-});
 const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
 
 class App extends Component {
@@ -21,7 +12,7 @@ class App extends Component {
 
   handleAdd = async () => {
     const obj = { title: 't', body: 'b' };
-    const { data: post } = await axios.post(apiEndpoint, obj);
+    const { data: post } = await http.post(apiEndpoint, obj);
     console.log(post);
     const posts = [post, ...this.state.posts]; //posts in state is an array
     this.setState({ posts })
@@ -33,8 +24,8 @@ class App extends Component {
     post.title = "UPDATED";
 
 
-    // const { data } = await axios.put(apiEndpoint + "/" + post.id, post);
-    await axios.patch(apiEndpoint + "/" + post.id, { title: post.title });
+    // const { data } = await http.put(apiEndpoint + "/" + post.id, post);
+    await http.patch(apiEndpoint + "/" + post.id, { title: post.title });
 
     // console.log(data);
 
@@ -58,7 +49,7 @@ class App extends Component {
     this.setState({ posts });
 
     try {
-      await axios.delete(apiEndpoint + '/' + post.id);
+      await http.delete(apiEndpoint + '/' + post.id);
       // throw new Error('');
     } catch (ex) {
       if (ex.request && ex.request === 404) {
@@ -74,7 +65,7 @@ class App extends Component {
 
 
   async componentDidMount() {
-    const response = await axios.get(apiEndpoint);
+    const response = await http.get(apiEndpoint);
     const { data } = response;
     // console.log(data);
     this.setState({ posts: data });
