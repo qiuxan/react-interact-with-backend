@@ -4,6 +4,9 @@ import "./App.css";
 import config from "./config.json";
 import 'react-toastify/dist/ReactToastify.css';
 import http from "./services/httpService";
+import * as Sentry from "@sentry/react";
+
+
 
 
 class App extends Component {
@@ -78,9 +81,10 @@ class App extends Component {
     return (
       <React.Fragment>
         <ToastContainer />
-        <button className="btn btn-primary" onClick={this.handleAdd}>
-          Add
-        </button>
+        {/* <button onClick={methodDoesNotExist}>Break the world</button> */}
+
+        <button className="btn btn-primary" onClick={() => { throw Error("something is wrong") }}>wrong</button>
+
         <table className="table">
           <thead>
             <tr>
@@ -118,4 +122,6 @@ class App extends Component {
   }
 }
 
-export default App;
+// export default App;
+export default Sentry.withProfiler(App);
+
