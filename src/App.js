@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import { ToastContainer } from "react-toastify";
 import "./App.css";
+import config from "./config.json";
+import 'react-toastify/dist/ReactToastify.css';
 import http from "./services/httpService";
 
-
-const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
 
 class App extends Component {
   state = {
@@ -12,7 +13,7 @@ class App extends Component {
 
   handleAdd = async () => {
     const obj = { title: 't', body: 'b' };
-    const { data: post } = await http.post(apiEndpoint, obj);
+    const { data: post } = await http.post(config.apiEndpoint, obj);
     console.log(post);
     const posts = [post, ...this.state.posts]; //posts in state is an array
     this.setState({ posts })
@@ -24,8 +25,8 @@ class App extends Component {
     post.title = "UPDATED";
 
 
-    // const { data } = await http.put(apiEndpoint + "/" + post.id, post);
-    await http.patch(apiEndpoint + "/" + post.id, { title: post.title });
+    // const { data } = await http.put(config.apiEndpoint + "/" + post.id, post);
+    await http.patch(config.apiEndpoint + "/" + post.id, { title: post.title });
 
     // console.log(data);
 
@@ -49,7 +50,7 @@ class App extends Component {
     this.setState({ posts });
 
     try {
-      await http.delete(apiEndpoint + '/' + post.id);
+      await http.delete(config.apiEndpoint + '/' + post.id);
       // throw new Error('');
     } catch (ex) {
       if (ex.request && ex.request === 404) {
@@ -65,7 +66,7 @@ class App extends Component {
 
 
   async componentDidMount() {
-    const response = await http.get(apiEndpoint);
+    const response = await http.get(config.apiEndpoint);
     const { data } = response;
     // console.log(data);
     this.setState({ posts: data });
@@ -76,6 +77,7 @@ class App extends Component {
     // console.log(this.state);
     return (
       <React.Fragment>
+        <ToastContainer />
         <button className="btn btn-primary" onClick={this.handleAdd}>
           Add
         </button>
